@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+	img {width: 100px;}
+	body {text-align: center;}
+	h5 {color: red;}
+	span {color: black;}
+	</style>
+	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+<body>
+	<h4>猜猜小游戏</h4>
+	<table align="center">
+		<tr>
+			<td><img src="" alt="" id="0"></td>
+			<td><img src="" alt="" id="1"></td>
+			<td><img src="" alt="" id="2"></td>
+			<td><img src="" alt="" id="3"></td>
+		</tr>
+		<tr>
+			<td><img src="" alt="" id="4"></td>
+			<td><img src="" alt="" id="5"></td>
+			<td><img src="" alt="" id="6"></td>
+			<td><img src="" alt="" id="7"></td>
+		</tr>
+		<tr>
+			<td><img src="" alt="" id="8"></td>
+			<td><img src="" alt="" id="9"></td>
+			<td><img src="" alt="" id="10"></td>
+			<td><img src="" alt="" id="11"></td>
+		</tr>
+		<tr>
+			<td><img src="" alt="" id="12"></td>
+			<td><img src="" alt="" id="13"></td>
+			<td><img src="" alt="" id="14"></td>
+			<td><img src="" alt="" id="15"></td>
+		</tr>
+	</table>
+	<h5>恭喜完成游戏，用时<span></span>秒！</h5>
+	<script>
+	// 全局变量
+	var start;
+	var map = new Array();
+	for (var i = 0; i < 16; i++) {
+		map[i] = i;
+	};
+	var questionImgSrc;
+	var left = map.length;  // 剩余图片数，用于判断游戏是否结束
+	var time = 0;  // 判断是奇数次点击还是偶数次点击，1为第一次，0为第二次
+	var lastSrc;
+	var lastId;
+	// 初始化
+	$(document).ready(function(){
+		questionImgSrc = "./guess/q.jpg";
+		start = $.now();
+		// 初始化对应关系
+		map.sort(shuffle);
+		console.log(map);
+		// 设置图片全为问号
+		$("img").attr("src", questionImgSrc);
+		// 隐藏成功提示
+		$("h5").hide();
+	});
+	
+	$("img").click(function(){
+		// 如果图片不是问号，不能点击
+		if ($(this).attr('src') != questionImgSrc) {
+			return;
+		};
+		if (left == 0) {
+			alert("你已经成功了，请刷新开始下一局");
+			return;
+		};
+		time = 1 - time;
+		var id = $(this).attr("id");
+		var nowSrc = getSrcById(map[id], map);
+		if (time == 1) {  // 第一次点击
+			lastSrc = nowSrc;
+			lastId = id;
+			// 显示图片1s
+			$(this).attr("src", nowSrc);
+			setTimeout(function(){setQuestionById(id);}, 200);
+		}else{  // 第二次点击，判断是否相同，相同全部显示，left-2，不相同则显示图片1s
+			if (id != lastId && nowSrc == lastSrc) {
+				$(this).attr("src", nowSrc);
+				$("#" + lastId).attr("src", nowSrc);
+				left -= 2;
+				if (left == 0) {
+					end = $.now();
+					$("span").html((end-start)/1000);
+					$("h5").show();
+				};
+			}else{
+				// 显示图片1s
+				$(this).attr("src", nowSrc);
+				setTimeout(function(){setQuestionById(id);}, 200);
+			}
+		}
+	});
+
+	// 	设置对应id图片为空
+    function setQuestionById(id) {
+    	$("#" + id).attr("src", questionImgSrc);
+    }
+
+    // 用于随机排序数组
+   	function shuffle() {
+   		return 0.5-Math.random();
+   	}
+
+   	// 根据id获得图片路径
+   	function getSrcById(id, map) {
+   		prefix = './guess/';
+   		suffix = '.jpg';
+   		num = id%(map.length/2);
+   		return (prefix + num + suffix);
+   	}
+	</script>
+</body>
+</html>
