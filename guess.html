@@ -68,12 +68,13 @@
 	$("img").click(function(){
 		// 如果图片不是问号，不能点击
 		if ($(this).attr('src') != questionImgSrc) {
+		    if (left == 0) {
+				alert("你已经成功了，请刷新开始下一局");
+				return;
+			};
 			return;
 		};
-		if (left == 0) {
-			alert("你已经成功了，请刷新开始下一局");
-			return;
-		};
+
 		time = 1 - time;
 		var id = $(this).attr("id");
 		var nowSrc = getSrcById(map[id], map);
