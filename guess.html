@@ -9,10 +9,11 @@
 	h5 {color: red;}
 	span {color: black;}
 	</style>
-	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    {{/*<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>*/}}
+    <script src="./static/js/jquery-3.2.1.min.js"></script>
 </head>
 <body>
-	<h4>猜猜小游戏</h4>
+	<h4>游戏</h4>
 	<table align="center">
 		<tr>
 			<td><img src="" alt="" id="0"></td>
@@ -43,10 +44,10 @@
 	<script>
 	// 全局变量
 	var start;
-	var map = new Array();
+	var map = new Array(16);
 	for (var i = 0; i < 16; i++) {
 		map[i] = i;
-	};
+	}
 	var questionImgSrc;
 	var left = map.length;  // 剩余图片数，用于判断游戏是否结束
 	var time = 0;  // 判断是奇数次点击还是偶数次点击，1为第一次，0为第二次
@@ -54,7 +55,7 @@
 	var lastId;
 	// 初始化
 	$(document).ready(function(){
-		questionImgSrc = "./guess/q.jpg";
+		questionImgSrc = "./static/img/guess/q.jpg";
 		start = $.now();
 		// 初始化对应关系
 		map.sort(shuffle);
@@ -64,36 +65,36 @@
 		// 隐藏成功提示
 		$("h5").hide();
 	});
-	
+
 	$("img").click(function(){
 		// 如果图片不是问号，不能点击
-		if ($(this).attr('src') != questionImgSrc) {
-		    if (left == 0) {
+		if ($(this).attr('src') !== questionImgSrc) {
+		    if (left === 0) {
 				alert("你已经成功了，请刷新开始下一局");
 				return;
-			};
+			}
 			return;
-		};
+		}
 
 		time = 1 - time;
 		var id = $(this).attr("id");
 		var nowSrc = getSrcById(map[id], map);
-		if (time == 1) {  // 第一次点击
+		if (time === 1) {  // 第一次点击
 			lastSrc = nowSrc;
 			lastId = id;
 			// 显示图片1s
 			$(this).attr("src", nowSrc);
 			setTimeout(function(){setQuestionById(id);}, 200);
 		}else{  // 第二次点击，判断是否相同，相同全部显示，left-2，不相同则显示图片1s
-			if (id != lastId && nowSrc == lastSrc) {
+			if (id !== lastId && nowSrc === lastSrc) {
 				$(this).attr("src", nowSrc);
 				$("#" + lastId).attr("src", nowSrc);
 				left -= 2;
-				if (left == 0) {
+				if (left === 0) {
 					end = $.now();
 					$("span").html((end-start)/1000);
 					$("h5").show();
-				};
+				}
 			}else{
 				// 显示图片1s
 				$(this).attr("src", nowSrc);
@@ -114,7 +115,7 @@
 
    	// 根据id获得图片路径
    	function getSrcById(id, map) {
-   		prefix = './guess/';
+   		prefix = './static/img/guess/';
    		suffix = '.jpg';
    		num = id%(map.length/2);
    		return (prefix + num + suffix);
