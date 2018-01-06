@@ -5,7 +5,7 @@
     <title>交换拼图</title>
     <style>
         body {text-align: center}
-        img {width: 100px; height: 100px;}
+        img {height: 100px;}
         h5 {color: red;}
         span {color: black;}
     </style>
@@ -13,7 +13,7 @@
 </head>
 <body>
     <h4>交换拼图</h4>
-    <table>
+    <table align="center">
         <tr>
             <td><img src="" alt="" id="0"></td>
             <td><img src="" alt="" id="1"></td>
@@ -30,5 +30,65 @@
             <td><img src="" alt="" id="8"></td>
         </tr>
     </table>
+    <h5>恭喜完成游戏，用时<span></span>秒！</h5>
+    <script>
+        var map = new Array(9);
+        var res = new Array(9);
+        for(var i = 0; i < 9; i++) {
+            map[i] = i;
+            res[i] = i;
+        }
+        map.sort(shullfe);
+
+        var time = 0;
+        var orgId;
+        var start;
+        var finish = false;
+
+        $(document).ready(function() {
+            // 初始化图片
+            for(var id = 0; id < 9; id++) {
+                $("#" + id).attr("src", getSrcById(map[id]));
+            }
+            $("h5").hide();
+            start = $.now();
+        });
+
+        $("img").click(function() {
+            if (finish) {
+                alert("你已经成功了，请刷新开始下一局");
+                return;
+            }
+            time = 1 - time;
+            if (time === 1) {  // first, record
+                orgId = $(this).attr("id");
+            }else{   // second, swap
+                var id = $(this).attr("id");
+                swap(orgId, id, map);
+                if (map.toString() === res.toString()) {
+                    time = ($.now() - start) / 1000;
+                    $("h5").show();
+                    $("span").html(time);
+                    finish = true;
+                }
+            }
+        });
+
+        function getSrcById(id) {
+            return './static/img/puzzle/' + id + '.jpg';
+        }
+
+        function shullfe() {
+            return 0.5 - Math.random();
+        }
+
+        function swap(orgId, id, map) {
+            var temp = map[orgId];
+            map[orgId] = map[id];
+            map[id] = temp;
+            $("#" + orgId).attr("src", getSrcById(map[orgId]));
+            $("#" + id).attr("src", getSrcById(map[id]));
+        }
+    </script>
 </body>
 </html>
