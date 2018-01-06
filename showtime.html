@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>显示时间</title>
+    <style>
+        body {text-align: center; margin-top: 300px;}
+        span {color: red; font-size: 200%;}
+    </style>
+    <script type="text/javascript" src="./static/js/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+    <div>
+        <span id="day"></span> Days
+        <span id="hour"></span> Hours
+        <span id="minute"></span> Minutes
+        <span id="second"></span> Seconds
+    </div>
+    <script>
+        var DAY    = 24*60*60*1000;
+        var HOUR   = 60*60*1000;
+        var MINUTE = 60*1000;
+        var SECOND = 1000;
+        $(document).ready(function() {
+            showNum();
+            setInterval(showNum, 1000);
+        });
+
+        function showNum() {
+            var birthday = new Date("1994/01/08 00:00:00");
+            var now = new Date();
+            var time = (now.getTime() - birthday.getTime());
+            var day = Math.floor(time / DAY);
+            var remain = time - day * DAY;
+            var hour = Math.floor(remain / HOUR);
+            remain -= hour * HOUR;
+            var minute = Math.floor(remain / MINUTE);
+            remain -= minute * MINUTE;
+            var second = Math.floor(remain / SECOND);
+            $("#day").html(day);
+            $("#hour").html(hour);
+            $("#minute").html(minute);
+            $("#second").html(second);
+        }
+    </script>
+</body>
+</html>
