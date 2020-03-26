@@ -1,2 +1,2 @@
 # jsgames
-little games using js
+little js games
